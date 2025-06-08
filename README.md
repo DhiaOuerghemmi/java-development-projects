@@ -17,7 +17,7 @@ This repository acts as a centralized home for all Java initiatives—ranging fr
 
 ## Projects Overview
 
-| Project Name                      | Type               | Framework       | Status       |                     |
+| Project Name                      | Type               | Framework       | Status       |
 |-----------------------------------|--------------------|-----------------|--------------|
 | Personal Health Record Manager    | Microservice       | Spring Boot     | In Progress  |
 
