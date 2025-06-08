@@ -1,4 +1,3 @@
-```markdown
 # Personal Health Record Manager
 
 **Project Status:** In Progress
@@ -85,4 +84,3 @@ A lightweight, microservices-based platform that provides each patient with thei
 5.
 
 ---
-```
