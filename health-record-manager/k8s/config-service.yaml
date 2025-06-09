@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: config-service
+  namespace: phr-system
+  labels:
+    app: config-service
+spec:
+  type: ClusterIP
+  selector:
+    app: config-service
+  ports:
+    - name: http
+      port: 8888
+      targetPort: 8888
