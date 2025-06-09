@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: record-service
+  namespace: phr-system
+  labels:
+    app: record-service
+spec:
+  type: ClusterIP
+  selector:
+    app: record-service
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8081

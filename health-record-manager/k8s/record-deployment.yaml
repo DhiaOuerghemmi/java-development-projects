@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: record-service
+  namespace: phr-system
+  labels:
+    app: record-service
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: record-service
+  template:
+    metadata:
+      labels:
+        app: record-service
+    spec:
+      containers:
+        - name: record
+          image: <ECR_REPO>/record-service:latest
+          ports:
+            - containerPort: 8081
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: prod
+            - name: DB_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: phr-credentials
+                  key: DB_USERNAME
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: phr-credentials
+                  key: DB_PASSWORD
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "250m"
+              memory: "256Mi"
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: 8081
+            initialDelaySeconds: 10
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: 8081
+            initialDelaySeconds: 30
+            periodSeconds: 10
+      imagePullSecrets:
+        - name: ecr-registry-secret
