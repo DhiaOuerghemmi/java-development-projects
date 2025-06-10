@@ -1,0 +1,10 @@
+apiVersion: v2
+name: grafana
+description: "Grafana dashboards for PHR monitoring"
+type: application
+version: 0.1.0
+appVersion: "10.2.2"     # Grafana upstream version
+dependencies:
+  - name: grafana
+    version: 7.18.4       # recent stable chart
+    repository: https://grafana.github.io/helm-charts
