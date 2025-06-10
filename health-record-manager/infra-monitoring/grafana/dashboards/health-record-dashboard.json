@@ -1,0 +1,38 @@
+{
+  "id": null,
+  "title": "PHR Service Metrics",
+  "tags": ["phr", "services"],
+  "timezone": "browser",
+  "panels": [
+    {
+      "type": "graph",
+      "title": "HTTP Request Latency",
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.95, sum(rate(http_server_requests_seconds_bucket{job=\"record-service\"}[5m])) by (le))",
+          "legendFormat": "record-service 95th",
+          "interval": ""
+        },
+        {
+          "expr": "histogram_quantile(0.95, sum(rate(http_server_requests_seconds_bucket{job=\"auth-service\"}[5m])) by (le))",
+          "legendFormat": "auth-service 95th",
+          "interval": ""
+        }
+      ],
+      "gridPos": { "x": 0, "y": 0, "w": 12, "h": 8 }
+    },
+    {
+      "type": "stat",
+      "title": "Active Users",
+      "targets": [
+        {
+          "expr": "gauges{service=\"auth-service\",name=\"active_users\"}",
+          "legendFormat": ""
+        }
+      ],
+      "gridPos": { "x": 12, "y": 0, "w": 6, "h": 4 }
+    }
+  ],
+  "schemaVersion": 32,
+  "version": 1
+}
