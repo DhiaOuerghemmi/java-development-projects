@@ -1,0 +1,32 @@
+{
+  "id": null,
+  "title": "Cluster & JVM Overview",
+  "tags": ["cluster", "jvm"],
+  "timezone": "browser",
+  "panels": [
+    {
+      "type": "graph",
+      "title": "CPU Usage (%)",
+      "targets": [
+        {
+          "expr": "sum(rate(container_cpu_usage_seconds_total{namespace=\"phr-system\"}[2m])) by (pod)",
+          "legendFormat": "{{pod}}"
+        }
+      ],
+      "gridPos": { "x": 0, "y": 0, "w": 12, "h": 8 }
+    },
+    {
+      "type": "graph",
+      "title": "JVM Heap Usage",
+      "targets": [
+        {
+          "expr": "jvm_memory_used_bytes{area=\"heap\"}",
+          "legendFormat": "{{instance}}"
+        }
+      ],
+      "gridPos": { "x": 0, "y": 8, "w": 12, "h": 8 }
+    }
+  ],
+  "schemaVersion": 32,
+  "version": 1
+}
