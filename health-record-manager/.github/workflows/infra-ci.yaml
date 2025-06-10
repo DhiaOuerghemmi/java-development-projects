@@ -1,0 +1,44 @@
+name: Terraform CI
+
+on:
+  pull_request:
+    paths:
+      - 'infra/terraform/**'
+      - '.github/workflows/infra-ci.yml'
+
+jobs:
+  terraform:
+    name: Terraform Format, Init, Plan
+    runs-on: ubuntu-latest
+    env:
+      TF_ROOT: infra/terraform
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.5.0
+
+      - name: Terraform fmt
+        working-directory: ${{ env.TF_ROOT }}
+        run: terraform fmt -check
+
+      - name: Terraform init
+        working-directory: ${{ env.TF_ROOT }}
+        run: terraform init -input=false
+
+      - name: Terraform validate
+        working-directory: ${{ env.TF_ROOT }}
+        run: terraform validate
+
+      - name: Terraform plan (dev)
+        working-directory: ${{ env.TF_ROOT }}
+        run: terraform plan -var-file=envs/dev.tfvars -out=tfplan
+
+      - name: Upload plan artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: terraform-plan
+          path: infra/terraform/tfplan
