@@ -1,0 +1,36 @@
+name: Auth Service CI
+
+on:
+  push:
+    paths:
+      - "services/auth-service/**"
+      - ".github/workflows/auth-ci.yml"
+  pull_request:
+    paths:
+      - "services/auth-service/**"
+
+jobs:
+  build-test:
+    name: Build & Test Auth Service
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: 17
+          distribution: temurin
+
+      - name: Cache Maven packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-m2-${{ hashFiles('services/auth-service/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-m2-
+
+      - name: Build & run tests
+        working-directory: services/auth-service
+        run: mvn clean verify
