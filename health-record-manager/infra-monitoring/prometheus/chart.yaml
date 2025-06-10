@@ -1,0 +1,10 @@
+apiVersion: v2
+name: prometheus
+description: "Prometheus monitoring for PHR microservices"
+type: application
+version: 0.1.0
+appVersion: "2.47.0"     # Prometheus upstream version
+dependencies:
+  - name: prometheus
+    version: 45.6.0       # match a recent stable chart
+    repository: https://prometheus-community.github.io/helm-charts
