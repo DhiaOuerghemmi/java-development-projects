@@ -1,0 +1,28 @@
+# Compiled class files
+*.class
+# JARs and targets
+*.jar
+target/
+
+# Maven
+.mvn/
+!**/src/main/**/resources/**
+
+# Spring Boot
+*.log
+
+# Terraform
+*.tfstate
+*.tfstate.*
+.terraform/
+
+# Docker temp files
+**/Dockerfile*~
+
+# IDE and local settings
+.vscode/
+.idea/
+*.iml
+
+# Misc
+.DS_Store
