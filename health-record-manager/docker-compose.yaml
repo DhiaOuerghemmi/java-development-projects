@@ -1,0 +1,78 @@
+version: "3.8"
+
+services:
+  # Auth Service (using H2 in-memory)
+  auth-service:
+    image: phr/auth-service:local
+    build:
+      context: .
+      dockerfile: services/auth-service/Dockerfile
+      args:
+        PROFILE: dev
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+
+  # Record Service (using H2 in-memory)
+  record-service:
+    image: phr/record-service:local
+    build:
+      context: .
+      dockerfile: services/record-service/Dockerfile
+      args:
+        PROFILE: dev
+    ports:
+      - "8081:8081"
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+    depends_on:
+      - auth-service
+
+  # Gateway Service
+  gateway-service:
+    image: phr/gateway-service:local
+    build:
+      context: .
+      dockerfile: services/gateway-service/Dockerfile
+      args:
+        PROFILE: dev
+    ports:
+      - "8082:8082"
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+    depends_on:
+      - auth-service
+      - record-service
+
+  # Config Service
+  config-service:
+    image: phr/config-service:local
+    build:
+      context: .
+      dockerfile: services/config-service/Dockerfile
+      args:
+        PROFILE: dev
+    ports:
+      - "8888:8888"
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+
+  # Prometheus for scraping metrics
+  prometheus:
+    image: prom/prometheus:v2.47.0
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./infra-monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+    depends_on:
+      - auth-service
+      - record-service
+      - gateway-service
+      - config-service
+
+networks:
+  default:
+    name: phr-local-net
