@@ -1,0 +1,22 @@
+spring:
+  profiles:
+    active: ${PROFILE:dev}
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/your-org/phr-config-repo.git
+          default-label: main
+  application:
+    name: config-service
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,env,configprops
