@@ -1,21 +1,62 @@
-variable "aws_region" {
-  description = "AWS region"
-  type        = string
+terraform {
+  required_version = ">= 1.1.0"
+  backend "s3" { /* as before */ }
 }
 
-# Include the VPC module
-module "vpc" {
-  source       = "./modules/vpc"
-  aws_region   = var.aws_region
-  cidr_block   = "10.0.0.0/16"
-  public_subnets  = ["10.0.1.0/24", "10.0.2.0/24"]
-  private_subnets = ["10.0.11.0/24", "10.0.12.0/24"]
-  tags = {
-    Project = "med-reminder"
-    Env     = var.environment
+provider "aws" {
+  region = var.aws_region
+}
+
+data "terraform_remote_state" "vpc" {
+  backend = "s3"
+  config = {
+    bucket = "my-org-terraform-state"
+    key    = "medication-reminder/vpc.tfstate"
+    region = var.aws_region
   }
 }
 
-output "vpc_id" {
-  value = module.vpc.vpc_id
+module "iam" {
+  source = "./modules/iam"
+  eks_cluster_oidc_issuer = module.eks.cluster_oidc_issuer_url
+  aws_region              = var.aws_region
+  environment             = var.environment
+}
+
+module "eks" {
+  source          = "./modules/eks"
+  aws_region      = var.aws_region
+  vpc_id          = data.terraform_remote_state.vpc.outputs.vpc_id
+  public_subnets  = data.terraform_remote_state.vpc.outputs.public_subnet_ids
+  private_subnets = data.terraform_remote_state.vpc.outputs.private_subnet_ids
+  cluster_name    = "med-reminder-${var.environment}"
+  node_groups = {
+    default = {
+      desired_capacity = 2
+      max_capacity     = 4
+      min_capacity     = 1
+      instance_types   = ["t3.medium"]
+    }
+  }
+}
+
+module "rds" {
+  source            = "./modules/rds"
+  aws_region        = var.aws_region
+  subnet_ids        = data.terraform_remote_state.vpc.outputs.private_subnet_ids
+  vpc_security_group_ids = [module.eks.cluster_security_group_id]
+  db_name           = "medreminder"
+  username          = var.db_username
+  password          = var.db_password
+  multi_az          = true
+  allocated_storage = 20
+  instance_class    = "db.t3.micro"
+  environment       = var.environment
+}
+
+# Optional: deploy Prometheus via Helm on the new cluster
+module "monitoring" {
+  source         = "./modules/monitoring"
+  kubeconfig     = module.eks.kubeconfig
+  namespace      = "monitoring"
 }
