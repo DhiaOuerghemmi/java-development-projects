@@ -26,3 +26,18 @@
    - All sensitive credentials injected via environment variables or IAM roles
 
 ---
+
+# Non‑Functional Requirements
+
+| Category            | Requirement                                                               |
+|---------------------|---------------------------------------------------------------------------|
+| **Performance**     | Handle up to **1,000 reminders/minute** with <200 ms per SOAP call.       |
+| **Scalability**     | Scale horizontally: multiple pods behind an AWS ALB in EKS.               |
+| **Reliability**     | 99.9 % uptime SLA; automatic fail‑over for scheduler pods.               |
+| **Security**        | AES‑256 encryption for DB at rest; TLS 1.2+ for all inbound/outbound.     |
+| **Observability**   | Collect logs (JSON) to CloudWatch; metrics scraped by Prometheus.         |
+| **Maintainability** | 80 % unit test coverage; modular code (service/repository layers).        |
+| **Deployability**   | Fully automated GitHub Actions pipeline: build → test → Docker push → Helm upgrade. |
+| **Portability**     | Dockerized; can run locally or in any Kubernetes‑compatible cloud.       |
+
+---
