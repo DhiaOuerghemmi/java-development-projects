@@ -1,9 +1,0 @@
-<configuration>
-  <springProperty scope="context" name="LOG_PATTERN" source="logging.pattern.console"/>
-  <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
-    <!-- JSON structured logs -->
-  </encoder>
-  <root level="INFO">
-    <appender-ref ref="CONSOLE"/>
-  </root>
-</configuration>
