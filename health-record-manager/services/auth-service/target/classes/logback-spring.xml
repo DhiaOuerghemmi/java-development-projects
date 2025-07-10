@@ -1,0 +1,12 @@
+<configuration>
+  <springProperty scope="context" name="LOG_PATTERN" source="logging.pattern.console"/>
+  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>${LOG_PATTERN}</pattern>
+    </encoder>
+  </appender>
+  <root level="INFO">
+    <appender-ref ref="STDOUT"/>
+  </root>
+  <logger name="com.example.phr.auth" level="DEBUG"/>
+</configuration>
