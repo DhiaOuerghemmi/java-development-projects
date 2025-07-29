@@ -1,0 +1,19 @@
+spring:
+  config:
+    activate:
+      on-profile: prod
+  application:
+    name: gateway-service
+
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+      default-filters:
+        - DedupeResponseHeader=Access-Control-Allow-Credentials,Access-Control-Allow-Origin
+
+management:
+  endpoints:
+    web:
+      exposure: health,info,metrics,prometheus
