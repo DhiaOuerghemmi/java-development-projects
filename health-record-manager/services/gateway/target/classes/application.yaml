@@ -1,0 +1,28 @@
+spring:
+  profiles:
+    active: ${PROFILE:dev}
+
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
+  application:
+    name: gateway-service
+
+  cloud:
+    gateway:
+      routes:
+        - id: auth
+          uri: http://auth-service:80
+          predicates:
+            - Path=/api/auth/**
+        - id: record
+          uri: http://record-service:80
+          predicates:
+            - Path=/api/records/**
+
+management:
+  endpoints:
+    web:
+      exposure: health,info,metrics,prometheus
