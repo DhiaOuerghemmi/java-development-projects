@@ -28,6 +28,13 @@
   </dependencyManagement>
 
   <dependencies>
+
+    <dependency>
+      <groupId>org.testcontainers</groupId>
+      <artifactId>postgresql</artifactId>
+      <version>1.18.3</version>
+      <scope>test</scope>
+    </dependency>
     <!-- Web & Security -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
